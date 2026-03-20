@@ -3,3 +3,5 @@
 .claude/
 .mcp.json
 tmp/
+
+node_modules/
