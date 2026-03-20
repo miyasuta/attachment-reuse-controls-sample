@@ -1,0 +1,3 @@
+[submodule "ui5-upload-controls"]
+	path = ui5-upload-controls
+	url = https://github.com/miyasuta/ui5-upload-controls.git
