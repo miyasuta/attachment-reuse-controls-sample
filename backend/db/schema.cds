@@ -7,7 +7,7 @@ entity Quotations : managed {
     key ID          : UUID;
         Description : String(255);
         file        : LargeBinary @Core.MediaType: mediaType;
-        mediaType   : String(255);
-        fileName    : String(255);
+        mediaType   : String(255) @readonly;
+        fileName    : String(255) @readonly;
         attachments : Composition of many Attachments;
 }
