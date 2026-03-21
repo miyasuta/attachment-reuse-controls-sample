@@ -29,6 +29,13 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+    - name: fiori-tools-servestatic
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        paths:
+          - path: /resources/miyasuta/ui5uploadcontrols
+            src: ../../ui5-upload-controls/dist/resources/miyasuta/ui5uploadcontrols
+            fallthrough: false
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:

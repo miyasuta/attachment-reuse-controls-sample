@@ -128,7 +128,17 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/Quotations"
+              "contextPath": "/Quotations",
+              "content": {
+                "body": {
+                  "sections": {
+                    "SingleFileUpload": {
+                      "template": "ns.fiorielements.ext.fragment.SingleFileUpload",
+                      "title": "File Upload"
+                    }
+                  }
+                }
+              }
             }
           }
         }
