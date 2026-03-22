@@ -9,7 +9,7 @@
 - [x] Filename display / download link
 - [x] Draft detection and draftOnly enforcement
 - [x] draftOnly=false flow (EditAction → upload → draftActivate)
-- [ ] File deletion
+- [x] File deletion
 - [ ] Error handling / user feedback
 - [ ] MultiFileUpload control
 
@@ -46,7 +46,7 @@ Set `width="auto"` on the internal FileUploader so it does not stretch.
 
 ### 5. File deletion
 
-- Layout: ファイルリンクは FileUploader の**下**に表示する
+- Layout: ファイルリンクは FileUploader の**右**に表示する
 - リンクの横に ❌ ボタン（`sap.m.Button`）を表示する
 - 削除ボタンは、FileUploader が enabled のときだけ有効化する（`draftOnly=true` かつ active entity のときは disabled）
 - 削除処理: `PATCH {contentProperty: null}` を送信（ファイル本体を null にするだけで fileName も自動的にクリアされる）
