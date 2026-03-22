@@ -8,6 +8,6 @@ entity Quotations : managed {
         Description : String(255);
         file        : LargeBinary @Core.MediaType: mediaType;
         mediaType   : String(255) @readonly;
-        fileName    : String(255) @readonly;
+        fileName    : String(255);
         attachments : Composition of many Attachments;
 }

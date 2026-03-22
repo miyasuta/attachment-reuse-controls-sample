@@ -4,3 +4,7 @@ service QuoteService {
     @odata.draft.enabled
     entity Quotations as projection on quote.Quotations;
 }
+
+service QuoteNonDraftService {
+    entity Quotations as projection on quote.Quotations;
+}
