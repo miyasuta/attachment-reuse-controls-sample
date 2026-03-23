@@ -44,3 +44,52 @@ if (obj === undefined || obj === null) {
     }).catch(() => {});
 }
 ```
+
+---
+
+## #5 Downloaded file is named "file.xlsx" instead of the actual stored filename
+
+**Status**: Resolved (backend configuration)
+
+**Symptom**: When the user clicks the filename link to download an attached file (e.g. `report.xlsx`), the browser saves it as `file.xlsx` (or `content`) instead of the name stored in the `fileNameProperty` field.
+
+**Root cause**: The download link `href` points to the OData binary property endpoint (e.g. `.../Entity(key)/content`). The browser determines the save-as filename from the `Content-Disposition: attachment; filename="..."` response header. Without explicit configuration, CAP does not include this header, so the browser falls back to the URL's last path segment or a generic name.
+
+**Fix**: Add `@Core.ContentDisposition.Filename` to the `LargeBinary` property in the CDS model:
+
+```cds
+entity YourEntity : managed {
+  content  : LargeBinary @Core.MediaType: 'application/octet-stream'
+                          @Core.ContentDisposition.Filename: fileName;
+  fileName : String;
+}
+```
+
+This causes CAP to include `Content-Disposition: attachment; filename="<storedFileName>"` in the response, and the browser uses the correct filename.
+
+---
+
+## #4 PATCH for filename fails when `draftOnly=false` in display mode
+
+**Status**: Resolved
+
+**Symptom**: When `draftOnly="false"` is set and the user uploads or deletes a file from display mode (`IsActiveEntity=true`), the PATCH request for updating the filename fails.
+
+**Root cause**: `_uploadWithDraftLifecycle` read `@odata.id` from the `draftEdit` response body to derive the draft entity URL. However, CAP's `draftEdit` action does **not** include `@odata.id` in the response — only `@odata.context` is returned. As a result, `draftId` was `undefined`, and the PATCH was sent to `/odata/v4/<service>/undefined` (HTTP 404/500).
+
+Additionally, `_onDeletePress` always patched the active entity directly, which fails on draft-enabled services where active entities are read-only.
+
+**Fix**:
+- In `_uploadWithDraftLifecycle`: derive the draft entity path by replacing `IsActiveEntity=true` with `IsActiveEntity=false` in the original `entityPath`, instead of parsing `@odata.id`.
+- In `_onDeletePress`: when `draftOnly=false` and `IsActiveEntity=true`, delegate to `_deleteWithDraftLifecycle` (draftEdit → PATCH to clear file on draft → draftActivate) instead of patching the active entity directly.
+
+```ts
+// Before (broken)
+const draftEntity = await draftEditResponse.json();
+const draftId = draftEntity["@odata.id"]; // undefined in CAP
+await this._uploadDirect(serviceUrl, `/${draftId}`, file, csrfToken);
+
+// After
+const draftEntityPath = entityPath.replace(/IsActiveEntity=true/i, "IsActiveEntity=false");
+await this._uploadDirect(serviceUrl, draftEntityPath, file, csrfToken);
+```
