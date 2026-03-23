@@ -1,0 +1,17 @@
+<mvc:View controllerName="freestylenondraft.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" title="Quotations">
+        <List id="list"
+            items="{/Quotations}"
+            mode="None">
+            <items>
+                <StandardListItem
+                    title="{Description}"
+                    description="{ID}"
+                    type="Navigation"
+                    press=".onItemPress"/>
+            </items>
+        </List>
+    </Page>
+</mvc:View>

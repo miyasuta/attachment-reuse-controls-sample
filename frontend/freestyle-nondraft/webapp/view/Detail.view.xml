@@ -1,0 +1,32 @@
+<mvc:View controllerName="freestylenondraft.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:upload="miyasuta.ui5uploadcontrols"
+    xmlns:form="sap.ui.layout.form">
+    <Page id="detailPage" title="Quotation Detail" showNavButton="true" navButtonPress=".onNavBack">
+        <headerContent>
+            <HBox alignItems="Center" renderType="Bare">
+                <Label text="Upload enabled" labelFor="enabledSwitch" class="sapUiTinyMarginEnd"/>
+                <Switch id="enabledSwitch" state="true" change=".onToggleEnabled"/>
+            </HBox>
+        </headerContent>
+        <content>
+            <form:SimpleForm editable="false" layout="ResponsiveGridLayout">
+                <form:content>
+                    <Label text="ID"/>
+                    <Text text="{ID}"/>
+                    <Label text="Description"/>
+                    <Text text="{Description}"/>
+                    <Label text="File"/>
+                    <upload:SingleFileUpload
+                        id="singleFileUpload"
+                        fileNameProperty="fileName"
+                        contentProperty="file"
+                        draftOnly="false"
+                        enabled="true"
+                        width="300px"/>
+                </form:content>
+            </form:SimpleForm>
+        </content>
+    </Page>
+</mvc:View>
