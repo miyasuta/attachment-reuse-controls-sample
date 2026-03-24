@@ -98,15 +98,33 @@ This causes CAP to include `Content-Disposition: attachment; filename="<storedFi
 
 ## #6 Upload button not visible in MultiFileUpload toolbar (Edit mode)
 
-**Status**: Open
+**Status**: Resolved
 
 **Symptom**: In the Object Page Edit mode (draft entity, `IsActiveEntity=false`), the toolbar above the attachments table shows no upload button, even though `_computeCanOperate()` should return `true`. Drag & drop still works as a fallback.
 
 **Design question**: `UploadSetwithTable` supports two upload entry points: drag & drop and a dedicated upload button rendered by the `ActionsPlaceholder` (`UploadButtonPlaceholder`). Having both is the expected UX — the button is needed for users who cannot drag & drop (e.g. touch devices).
 
-**Suspected root cause**: The upload button injected by `UploadSetwithTable` into the `ActionsPlaceholder` may not appear because the plugin is added via `oTable.addDependent(this._uploadPlugin)` instead of the `plugins` aggregation. `UploadSetwithTable` is a table plugin and is expected to be wired through `table.addPlugin()` (or the `plugins` aggregation). Using `addDependent` may skip the plugin lifecycle hook that injects the button.
+**Root cause**: `ActionsPlaceholder` was added to the toolbar but never associated with the plugin. Per the `UploadSetwithTable` API: *"Action buttons are rendered only when the association to the placeholder control is set."* The `actions` association (`addAction()`) was missing, so the plugin never knew which placeholder to inject its button into. Note: `addDependent` is correct and intentional — the API docs confirm this is the expected way to attach the plugin.
 
-**Proposed fix**: Replace `oTable.addDependent(this._uploadPlugin)` with `oTable.addPlugin(this._uploadPlugin)` (or add via the `plugins` aggregation) so the plugin can inject the upload button into the `ActionsPlaceholder`.
+**Fix**:
+- Give `ActionsPlaceholder` a stable ID (`this.getId() + "--uploadButton"`) and pass it to `UploadSetwithTable` via the `actions` property (array of IDs) in the constructor.
+- Add `ToolbarSpacer` before `ActionsPlaceholder` in the toolbar so the Upload button is right-aligned.
+- Add `this._uploadPlugin.setUploadEnabled(canOperate)` in `setEnabled()` so the upload button is disabled in display mode when `draftOnly=true`.
+
+```ts
+const sPlaceholderId = this.getId() + "--uploadButton";
+
+this._uploadPlugin = new UploadSetwithTable(sPluginId, {
+    beforeUploadStarts: this._onBeforeUploadStarts.bind(this),
+    actions: [sPlaceholderId]  // associate by ID
+});
+
+const oPlaceholder = new ActionsPlaceholder(sPlaceholderId, {
+    placeholderFor: UploadSetwithTableActionPlaceHolder.UploadButtonPlaceholder
+});
+
+new Toolbar({ content: [new ToolbarSpacer(), oPlaceholder] })
+```
 
 ---
 
