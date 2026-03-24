@@ -7,7 +7,7 @@
         <headerContent>
             <HBox alignItems="Center" renderType="Bare">
                 <Label text="Upload enabled" labelFor="enabledSwitch" class="sapUiTinyMarginEnd"/>
-                <Switch id="enabledSwitch" state="true" change=".onToggleEnabled"/>
+                <Switch id="enabledSwitch" state="{view>/uploadEnabled}" change=".onToggleEnabled"/>
             </HBox>
         </headerContent>
         <content>
@@ -23,10 +23,16 @@
                         fileNameProperty="fileName"
                         contentProperty="file"
                         draftOnly="false"
-                        enabled="true"
+                        enabled="{view>/uploadEnabled}"
                         width="300px"/>
                 </form:content>
             </form:SimpleForm>
+            <Title text="Attachments" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
+            <upload:MultiFileUpload
+                id="multiFileUpload"
+                attachmentsSegment="attachments"
+                draftOnly="false"
+                enabled="{view>/uploadEnabled}"/>
         </content>
     </Page>
 </mvc:View>
