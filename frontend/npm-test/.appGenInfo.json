@@ -1,0 +1,28 @@
+{
+  "generationParameters": {
+    "generationDate": "Wed Mar 25 2026 06:29:07 GMT+0900 (Japan Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "OData URL",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost:4004/odata/v4/quote/",
+    "appName": "npm-test",
+    "appTitle": "Quotations",
+    "appDescription": "An SAP Fiori application for testing npm-installed ui5-upload-controls.",
+    "appNamespace": "",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.146.0",
+    "enableEslint": false,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.21.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "Quotations"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}
