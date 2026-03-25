@@ -34,6 +34,19 @@
           "odataVersion": "4.01"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "Quotes-manage": {
+          "semanticObject": "Quotes",
+          "action": "manage",
+          "title": "{{Quotes-manage.flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
     }
   },
   "sap.ui": {
@@ -54,6 +67,9 @@
   },
   "sap.ui5": {
     "flexEnabled": true,
+    "resourceRoots": {
+      "miyasuta.ui5uploadcontrols": "./resources/miyasuta/ui5uploadcontrols"
+    },
     "dependencies": {
       "minUI5Version": "1.146.0",
       "libs": {
@@ -170,5 +186,9 @@
     "app": {
       "enableLazyLoading": true
     }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "npmtest"
   }
 }
