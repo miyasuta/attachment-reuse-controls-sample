@@ -8,11 +8,13 @@
     "sapui5"
   ],
   "main": "webapp/index.html",
-  "dependencies": {},
+  "dependencies": {
+    "ui5-upload-controls": "^1.0.0"
+  },
   "devDependencies": {
-    "@ui5/cli": "^4.0.33",
+    "@sap-ux/ui5-middleware-fe-mockserver": "2",
     "@sap/ux-ui5-tooling": "1",
-    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+    "@ui5/cli": "^4.0.33"
   },
   "scripts": {
     "start": "fiori run --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#npmtest-tile\"",
@@ -26,5 +28,10 @@
     "start-variants-management": "fiori run --open \"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#npmtest-tile\""
   },
   "sapuxLayer": "CUSTOMER_BASE",
-  "sapux": true
+  "sapux": true,
+  "ui5": {
+    "dependencies": [
+      "ui5-upload-controls"
+    ]
+  }
 }

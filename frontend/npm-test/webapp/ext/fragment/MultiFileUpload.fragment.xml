@@ -1,0 +1,6 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:upload="miyasuta.ui5uploadcontrols">
+	<upload:MultiFileUpload
+		id="multiFileUpload"
+		attachmentsSegment="attachments"
+		draftOnly="true" />
+</core:FragmentDefinition>

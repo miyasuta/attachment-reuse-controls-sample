@@ -1,0 +1,8 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:upload="miyasuta.ui5uploadcontrols">
+	<upload:SingleFileUpload
+		id="singleFileUpload"
+		fileNameProperty="fileName"
+		contentProperty="file"
+		draftOnly="false"
+		width="250px" />
+</core:FragmentDefinition>
