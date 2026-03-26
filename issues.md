@@ -153,6 +153,27 @@ For an OData V4 `ListBinding` that was set up via `bindItems({path: "attachments
 
 ---
 
+## #9 MultiFileUpload: Upload button stays enabled when `draftOnly="true"` and entity is active
+
+**Status**: Resolved
+
+**Symptom**: When `draftOnly="true"` is set and the entity is in display mode (`IsActiveEntity=true`), the Upload button in the `MultiFileUpload` toolbar remains visually enabled. Clicking it does not send any request to the backend.
+
+**Root cause**: `_bindTableItems` computed `canOperate` and applied it to the delete button template, but did not call `this._uploadPlugin.setUploadEnabled(canOperate)`. As a result, `UploadSetwithTable` kept its default `uploadEnabled=true` regardless of the draft state.
+
+**Fix**: Added `this._uploadPlugin.setUploadEnabled(canOperate)` in `_bindTableItems` immediately after computing `canOperate`.
+
+```ts
+const canOperate = this._computeCanOperate();
+this._uploadPlugin.setUploadEnabled(canOperate);  // ← added
+```
+
+**Tests added** (`ui5-upload-controls` — `MultiFileUpload.qunit.ts`):
+- `_computeCanOperate` module: 2 additional cases — `draftOnly=true + IsActiveEntity=true → false`, no binding context → `true`
+- New module "Upload Button State": 4 cases verifying `_uploadPlugin.getUploadEnabled()` after `_bindTableItems`, covering all combinations of `draftOnly` × `enabled` × entity state
+
+---
+
 ## #8 MultiFileUpload table stays empty on initial load in Fiori Elements Object Page
 
 **Status**: Resolved
