@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:upload="miyasuta.ui5uploadcontrols">
+	<VBox id="idMultiFileUploadVBox">
+		<Label id="idDraftOnlytrueMultiFileUploadLabel" text="draftOnly=true" />
+		<upload:MultiFileUpload
+			id="idDraftOnlyMultiFileUpload"
+			attachmentsSegment="attachments"
+			draftOnly="true" />
+		<Label id="idDraftOnlyfalseMultiFileUploadLabel" text="draftOnly=false" />
+		<upload:MultiFileUpload
+			id="idNonDraftMultiFileUpload"
+			attachmentsSegment="attachments"
+			draftOnly="false" />
+	</VBox>
+</core:FragmentDefinition>
