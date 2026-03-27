@@ -8,10 +8,8 @@
     "sapui5"
   ],
   "main": "webapp/index.html",
-  "dependencies": {
-    "ui5-upload-controls": "^1.0.0"
-  },
   "devDependencies": {
+    "ui5-upload-controls": "^1.0.0",
     "@sap-ux/ui5-middleware-fe-mockserver": "2",
     "@sap/ux-ui5-tooling": "1",
     "@ui5/cli": "^4.0.33",
@@ -34,10 +32,5 @@
     "undeploy": "cf undeploy npmtest --delete-services --delete-service-keys --delete-service-brokers"
   },
   "sapuxLayer": "CUSTOMER_BASE",
-  "sapux": true,
-  "ui5": {
-    "dependencies": [
-      "ui5-upload-controls"
-    ]
-  }
+  "sapux": true
 }
