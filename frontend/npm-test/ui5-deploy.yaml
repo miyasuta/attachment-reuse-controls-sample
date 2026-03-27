@@ -8,6 +8,9 @@ resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
 builder:
+  settings:
+    includeDependency:
+      - miyasuta.ui5uploadcontrols
   resources:
     excludes:
       - /test/**
@@ -20,3 +23,5 @@ builder:
         relativePaths: true
         additionalFiles:
           - xs-app.json
+        includeDependencies:
+          - miyasuta.ui5uploadcontrols

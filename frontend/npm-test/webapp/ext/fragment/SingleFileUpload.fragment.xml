@@ -3,6 +3,6 @@
 		id="singleFileUpload"
 		fileNameProperty="fileName"
 		contentProperty="file"
-		draftOnly="false"
+		draftOnly="true"
 		width="250px" />
 </core:FragmentDefinition>
