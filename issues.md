@@ -203,3 +203,40 @@ private _onModelContextChange(): void {
 }
 ```
 
+---
+
+## #10 binding context が伝播されない（annotation datasource 使用時）
+
+**Status**: Open
+
+**Symptom**: Fiori Elements Object Page のカスタムセクションに配置した `SingleFileUpload` / `MultiFileUpload` で、`getBindingContext()` が常に `undefined` を返す。結果として `draftOnly="true"` 時に Upload ボタンが有効のままになり、テーブルバインディングも行われない。
+
+**再現条件**: annotation.xml 内にサービス `$metadata` への Reference がある場合に発生する。
+
+```xml
+<!-- annotation.xml — この Reference が原因 -->
+<edmx:Reference Uri="/odata/v4/quote/$metadata">
+    <edmx:Include Namespace="QuoteService"/>
+</edmx:Reference>
+```
+
+これは `@sap/generator-fiori` が自動生成する標準的な記述であり、ローカルアノテーションでサービスのエンティティ型を参照するために必須。つまり **annotation datasource を使う一般的な Fiori Elements アプリで普通に発生しうる**。
+
+annotation datasource を削除すると正常に動作する。`sap.cloud`、`odataVersion`、`resourceRoots`、VBox ラッパーの有無は無関係。fiorielements / npm-test の両方で再現を確認済み。
+
+**調査結果**:
+
+- `_onModelContextChange` は annotation あり/なし どちらでも複数回発火する
+- annotation なしの場合: 最終回に binding context が伝播され、`_bindTableItems` が呼ばれる（例: 9回発火、最終回に context あり）
+- annotation ありの場合: 全ての発火で `getBindingContext()` が `undefined` を返す（例: 7回発火、全て context なし）
+- ライブラリコード自体は同一（fiorielements / npm-test で完全一致を確認済み）
+- annotation.xml の `<edmx:Reference Uri="/odata/v4/quote/$metadata">` が FE のモデル初期化シーケンスに影響し、binding context を伝播する最終の `modelContextChange` イベントが発火しなくなる
+
+**影響を受けるコントロール**: `SingleFileUpload`（`onBeforeRendering`）、`MultiFileUpload`（`modelContextChange`）の両方。
+
+**対処方針（検討中）**: `modelContextChange` イベントの発火順序に依存しない、より堅牢な binding context 取得メカニズムが必要。候補:
+
+1. `setBindingContext` のオーバーライド
+2. `propagateProperties` のオーバーライド
+3. context が未取得の場合にリトライする仕組み（polling / MutationObserver / requestAnimationFrame）
+

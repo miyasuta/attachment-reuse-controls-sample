@@ -16,11 +16,20 @@
       "toolsId": "1e7b676e-2c90-4ccb-b63b-97a1c9a3bd57"
     },
     "dataSources": {
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      },
       "mainService": {
         "uri": "/odata/v4/quote/",
         "type": "OData",
         "settings": {
-          "annotations": [],
+          "annotations": [
+            "annotation"
+          ],
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "4.01"
         }
@@ -135,6 +144,14 @@
                     "SingleFileUpload": {
                       "template": "ns.fiorielements.ext.fragment.SingleFileUpload",
                       "title": "File Upload"
+                    },
+                    "MultiFileUpload": {
+                      "template": "ns.fiorielements.ext.fragment.MultiFileUpload",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "SingleFileUpload"
+                      },
+                      "title": "Multi File Upload"
                     }
                   }
                 }
