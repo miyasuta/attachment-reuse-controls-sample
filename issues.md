@@ -223,17 +223,18 @@ annotation datasource なしの場合は `_onModelContextChange` で即座にコ
 
 ---
 
-## #11 MultiFileUpload: ファイルアップロード時にネットワークリクエストが送信されない
+## #11 MultiFileUpload: アップロード後にテーブルが更新されない
 
 **Status**: Open
 
-**Symptom**: `MultiFileUpload` でファイルをアップロードしようとすると、ネットワークリクエスト（POST/PUT）が送信されない。ドラフト有効化のタイミングでページがリロードされ、その後ファイルが表示される。
+**Symptom**: `MultiFileUpload` でファイルをアップロードすると POST/PUT リクエストは正常に送信されるが、アップロード後のテーブル再取得（GET）が行われない。ドラフトを保存（draftActivate）するとページリロードが発生し、その時点でファイルが表示される。
 
 **再現手順**:
 1. Fiori Elements Object Page の Edit モード（`IsActiveEntity=false`）で `MultiFileUpload` を使用
 2. ファイルをドロップまたは Upload ボタンで選択
-3. ネットワークタブを確認 → POST/PUT リクエストが発生しない
-4. ドラフトを保存（draftActivate）するとページリロードが発生し、ファイルが表示される
+3. POST（attachment 作成）と PUT（content アップロード）は成功する
+4. しかしテーブルの GET リクエストが発生せず、テーブルが更新されない
+5. ドラフトを保存すると初めてファイルが表示される
 
 **調査状況**: 未着手
 
