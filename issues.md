@@ -207,36 +207,35 @@ private _onModelContextChange(): void {
 
 ## #10 binding context が伝播されない（annotation datasource 使用時）
 
-**Status**: Open
+**Status**: Resolved
 
 **Symptom**: Fiori Elements Object Page のカスタムセクションに配置した `SingleFileUpload` / `MultiFileUpload` で、`getBindingContext()` が常に `undefined` を返す。結果として `draftOnly="true"` 時に Upload ボタンが有効のままになり、テーブルバインディングも行われない。
 
-**再現条件**: annotation.xml 内にサービス `$metadata` への Reference がある場合に発生する。
+**再現条件**: annotation.xml 内にサービス `$metadata` への Reference がある場合に発生する。annotation datasource を削除すると正常に動作する。
 
-```xml
-<!-- annotation.xml — この Reference が原因 -->
-<edmx:Reference Uri="/odata/v4/quote/$metadata">
-    <edmx:Include Namespace="QuoteService"/>
-</edmx:Reference>
-```
+**根本原因**: UI5 `ManagedObject._propagateProperties` の参照等価ガード（`if (oObject.oPropagatedProperties !== oProperties)`）が、shared mutable object への変更を検知できずに `updateBindingContext` / `fireModelContextChange` をブロックする。ただし `getBindingContext()` は shared mutable `oPropagatedProperties` から直接読み取るため、ガード後でも正常にコンテキストを返す。問題は「通知が来ない」だけ。
 
-これは `@sap/generator-fiori` が自動生成する標準的な記述であり、ローカルアノテーションでサービスのエンティティ型を参照するために必須。つまり **annotation datasource を使う一般的な Fiori Elements アプリで普通に発生しうる**。
+**Fix**: `_onModelContextChange` でコンテキストが `undefined` の場合に `setTimeout` ポーリングを開始する。`getBindingContext()` を 100ms 間隔（最大50回 = 5秒）でポーリングし、コンテキストが到着したら `_bindTableItems()` / `invalidate()` を呼び出す。public API のみ使用。
 
-annotation datasource を削除すると正常に動作する。`sap.cloud`、`odataVersion`、`resourceRoots`、VBox ラッパーの有無は無関係。fiorielements / npm-test の両方で再現を確認済み。
+annotation datasource なしの場合は `_onModelContextChange` で即座にコンテキストが取得でき、ポーリングは開始されない。
 
-**調査結果**:
+**合わせて修正（IsActiveEntity タイミング問題）**: `_computeCanOperate()` が `getObject()` に依存しており、データ未到着時に誤って `true` を返していた。`IsActiveEntity` は OData キーの一部であり `getBindingContext().getPath()` に常に含まれるため、`getPath()` の正規表現マッチを一次判定とし、`getObject()` をフォールバックに変更。
 
-- `_onModelContextChange` は annotation あり/なし どちらでも複数回発火する
-- annotation なしの場合: 最終回に binding context が伝播され、`_bindTableItems` が呼ばれる（例: 9回発火、最終回に context あり）
-- annotation ありの場合: 全ての発火で `getBindingContext()` が `undefined` を返す（例: 7回発火、全て context なし）
-- ライブラリコード自体は同一（fiorielements / npm-test で完全一致を確認済み）
-- annotation.xml の `<edmx:Reference Uri="/odata/v4/quote/$metadata">` が FE のモデル初期化シーケンスに影響し、binding context を伝播する最終の `modelContextChange` イベントが発火しなくなる
+---
 
-**影響を受けるコントロール**: `SingleFileUpload`（`onBeforeRendering`）、`MultiFileUpload`（`modelContextChange`）の両方。
+## #11 MultiFileUpload: ファイルアップロード時にネットワークリクエストが送信されない
 
-**対処方針（検討中）**: `modelContextChange` イベントの発火順序に依存しない、より堅牢な binding context 取得メカニズムが必要。候補:
+**Status**: Open
 
-1. `setBindingContext` のオーバーライド
-2. `propagateProperties` のオーバーライド
-3. context が未取得の場合にリトライする仕組み（polling / MutationObserver / requestAnimationFrame）
+**Symptom**: `MultiFileUpload` でファイルをアップロードしようとすると、ネットワークリクエスト（POST/PUT）が送信されない。ドラフト有効化のタイミングでページがリロードされ、その後ファイルが表示される。
+
+**再現手順**:
+1. Fiori Elements Object Page の Edit モード（`IsActiveEntity=false`）で `MultiFileUpload` を使用
+2. ファイルをドロップまたは Upload ボタンで選択
+3. ネットワークタブを確認 → POST/PUT リクエストが発生しない
+4. ドラフトを保存（draftActivate）するとページリロードが発生し、ファイルが表示される
+
+**調査状況**: 未着手
+
+**影響範囲**: `MultiFileUpload` のみ（`SingleFileUpload` は正常動作確認済み）
 
