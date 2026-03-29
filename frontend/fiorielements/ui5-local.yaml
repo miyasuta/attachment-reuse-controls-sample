@@ -41,16 +41,16 @@ server:
         backend:
           - path: /odata
             url: http://localhost:4004
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /odata/v4/quote
-            metadataPath: ./webapp/localService/mainService/metadata.xml
-            mockdataPath: ./webapp/localService/mainService/data
-            generateMockData: true
-        annotations: []
+    # - name: sap-fe-mockserver
+    #   beforeMiddleware: csp
+    #   configuration:
+    #     mountPath: /
+    #     services:
+    #       - urlPath: /odata/v4/quote
+    #         metadataPath: ./webapp/localService/mainService/metadata.xml
+    #         mockdataPath: ./webapp/localService/mainService/data
+    #         generateMockData: true
+    #     annotations: []
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
