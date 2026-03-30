@@ -153,27 +153,6 @@ For an OData V4 `ListBinding` that was set up via `bindItems({path: "attachments
 
 ---
 
-## #9 MultiFileUpload: Upload button stays enabled when `draftOnly="true"` and entity is active
-
-**Status**: Resolved
-
-**Symptom**: When `draftOnly="true"` is set and the entity is in display mode (`IsActiveEntity=true`), the Upload button in the `MultiFileUpload` toolbar remains visually enabled. Clicking it does not send any request to the backend.
-
-**Root cause**: `_bindTableItems` computed `canOperate` and applied it to the delete button template, but did not call `this._uploadPlugin.setUploadEnabled(canOperate)`. As a result, `UploadSetwithTable` kept its default `uploadEnabled=true` regardless of the draft state.
-
-**Fix**: Added `this._uploadPlugin.setUploadEnabled(canOperate)` in `_bindTableItems` immediately after computing `canOperate`.
-
-```ts
-const canOperate = this._computeCanOperate();
-this._uploadPlugin.setUploadEnabled(canOperate);  // ← added
-```
-
-**Tests added** (`ui5-upload-controls` — `MultiFileUpload.qunit.ts`):
-- `_computeCanOperate` module: 2 additional cases — `draftOnly=true + IsActiveEntity=true → false`, no binding context → `true`
-- New module "Upload Button State": 4 cases verifying `_uploadPlugin.getUploadEnabled()` after `_bindTableItems`, covering all combinations of `draftOnly` × `enabled` × entity state
-
----
-
 ## #8 MultiFileUpload table stays empty on initial load in Fiori Elements Object Page
 
 **Status**: Resolved
@@ -203,6 +182,25 @@ private _onModelContextChange(): void {
 }
 ```
 
+## #9 MultiFileUpload: Upload button stays enabled when `draftOnly="true"` and entity is active
+
+**Status**: Resolved
+
+**Symptom**: When `draftOnly="true"` is set and the entity is in display mode (`IsActiveEntity=true`), the Upload button in the `MultiFileUpload` toolbar remains visually enabled. Clicking it does not send any request to the backend.
+
+**Root cause**: `_bindTableItems` computed `canOperate` and applied it to the delete button template, but did not call `this._uploadPlugin.setUploadEnabled(canOperate)`. As a result, `UploadSetwithTable` kept its default `uploadEnabled=true` regardless of the draft state.
+
+**Fix**: Added `this._uploadPlugin.setUploadEnabled(canOperate)` in `_bindTableItems` immediately after computing `canOperate`.
+
+```ts
+const canOperate = this._computeCanOperate();
+this._uploadPlugin.setUploadEnabled(canOperate);  // ← added
+```
+
+**Tests added** (`ui5-upload-controls` — `MultiFileUpload.qunit.ts`):
+- `_computeCanOperate` module: 2 additional cases — `draftOnly=true + IsActiveEntity=true → false`, no binding context → `true`
+- New module "Upload Button State": 4 cases verifying `_uploadPlugin.getUploadEnabled()` after `_bindTableItems`, covering all combinations of `draftOnly` × `enabled` × entity state
+
 ---
 
 ## #10 binding context が伝播されない（annotation datasource 使用時）
@@ -225,7 +223,7 @@ annotation datasource なしの場合は `_onModelContextChange` で即座にコ
 
 ## #11 MultiFileUpload: アップロード後にテーブルが更新されない
 
-**Status**: Open
+**Status**: Resolved
 
 **Symptom**: `MultiFileUpload` でファイルをアップロードすると POST/PUT リクエストは正常に送信されるが、アップロード後のテーブル再取得（GET）が行われない。ドラフトを保存（draftActivate）するとページリロードが発生し、その時点でファイルが表示される。
 
@@ -236,7 +234,7 @@ annotation datasource なしの場合は `_onModelContextChange` で即座にコ
 4. しかしテーブルの GET リクエストが発生せず、テーブルが更新されない
 5. ドラフトを保存すると初めてファイルが表示される
 
-**調査状況**: 未着手
+**根本原因**: アップロードは raw `fetch` で行われ OData V4 モデルを経由しないため、モデルのキャッシュが古いまま残る。`_bindTableItems()` を再度呼んでも、同じパス・コンテキストに対してモデルがキャッシュを返し GET が発生しない。annotation datasource がある場合（#10 の再現環境）、FE が `$expand=attachments` でエンティティを取得するため `attachments` のキャッシュが格納されており、この問題が顕在化した。
 
-**影響範囲**: `MultiFileUpload` のみ（`SingleFileUpload` は正常動作確認済み）
+**Fix**: アップロード/削除の成功後に `_bindTableItems()` を呼ぶ代わりに `context.requestSideEffects([{ $NavigationPropertyPath: attachmentsSegment }])` を呼ぶ。OData V4 モデルのキャッシュを破棄して GET を強制する正規の API。
 
