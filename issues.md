@@ -238,3 +238,26 @@ annotation datasource なしの場合は `_onModelContextChange` で即座にコ
 
 **Fix**: アップロード/削除の成功後に `_bindTableItems()` を呼ぶ代わりに `context.requestSideEffects([{ $NavigationPropertyPath: attachmentsSegment }])` を呼ぶ。OData V4 モデルのキャッシュを破棄して GET を強制する正規の API。
 
+---
+
+## #12 MultiFileUpload: 表示モードでファイルを削除してもファイルが削除されない
+
+**Status**: Resolved
+
+**Symptom**: 表示モード（`IsActiveEntity=true`）の状態で `MultiFileUpload` からファイルを削除しても、ファイルが実際には削除されない。
+
+**再現手順**:
+1. Fiori Elements Object Page を表示モード（`IsActiveEntity=true`）で開く
+2. `MultiFileUpload` の削除ボタンをクリック
+3. 外見上は削除されたように見えるが、ページをリロードするとファイルが残っている
+
+**根本原因**: 削除処理が DRAFT EDIT → DELETE → DRAFT ACTIVATE のシーケンスで実行されている。しかし `@cap-js/attachments` の attachment エンティティはドラフト対応コンポジションではなく、直接削除（DELETE リクエスト）が正しい操作である。ドラフトを介すると、draftActivate 時に CAP がドラフトの差分をアクティブエンティティに適用するが、attachment の削除はドラフトに記録されず、結果として削除が反映されない。
+
+**期待する動作**: DELETE は常にドラフトライフサイクルを経由せず、直接 `IsActiveEntity=false` のドラフトエンティティの attachment に対して DELETE リクエストを送信すべき。または、表示モード（`IsActiveEntity=true`）の場合は attachment エンティティに直接 DELETE リクエストを送信する。
+
+**Fix**:
+- `_onRowDeletePress` のドラフトライフサイクル分岐（`_deleteWithDraftLifecycle`）を削除し、常に `_deleteDirect` を呼ぶように変更。
+- `_deleteWithDraftLifecycle` メソッドを削除。
+- 不要になった `parentEntityPath`・`obj` 変数を削除。
+- テスト更新：`draftOnly=false` + `IsActiveEntity=true` の削除テストを「CSRF + DELETE の 2 呼び出し、アクティブエンティティの attachment に直接 DELETE」を検証する内容に変更。
+
