@@ -240,6 +240,32 @@ annotation datasource なしの場合は `_onModelContextChange` で即座にコ
 
 ---
 
+## #13 MultiFileUpload: ファイル名リンクをクリックすると空白ページが開く
+
+**Status**: Resolved
+
+**Symptom**: `MultiFileUpload` テーブルでファイル名のリンクをクリックすると、ファイルがダウンロードされる代わりに空白ページが新しいタブで開く。`SingleFileUpload` は正常にダウンロードされる。
+
+**再現手順**:
+1. Fiori Elements Object Page の `MultiFileUpload` セクションでファイルをアップロードする
+2. テーブルに表示されるファイル名リンクをクリックする
+3. 新しいタブが開くが、空白ページ（または空のコンテンツ）が表示される
+
+**根本原因**: `@cap-js/attachments` は `content` プロパティに `@Core.ContentDisposition: { Filename: filename, Type: 'inline' }` をデフォルトで設定している。`Type: 'inline'` はブラウザにコンテンツをインライン表示させる指示であり、Excel ファイルなど表示できない形式の場合に空白ページが開く。`SingleFileUpload` は `#5` の修正で `@Core.ContentDisposition.Filename` を独立して設定しており `Type` のデフォルトが `attachment` になるため正常にダウンロードされる。
+
+**Fix**: `schema.cds` で `Attachments` の `content` プロパティに `@Core.ContentDisposition: { Filename: filename, Type: 'attachment' }` をアノテーションし、`inline` を上書きする。
+
+```cds
+annotate Attachments with {
+    content @Core.ContentDisposition: {
+        Filename: filename,
+        Type    : 'attachment'
+    };
+}
+```
+
+---
+
 ## #12 MultiFileUpload: 表示モードでファイルを削除してもファイルが削除されない
 
 **Status**: Resolved

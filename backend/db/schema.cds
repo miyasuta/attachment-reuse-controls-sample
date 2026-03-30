@@ -11,3 +11,10 @@ entity Quotations : managed {
         fileName    : String(255);
         attachments : Composition of many Attachments;
 }
+
+annotate Attachments with {
+    content @Core.ContentDisposition: {
+        Filename: filename,
+        Type    : 'attachment'
+    };
+}
