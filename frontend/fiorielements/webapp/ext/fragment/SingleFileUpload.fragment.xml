@@ -7,12 +7,12 @@
 			contentProperty="file"
 			draftOnly="true"
 			width="250px" />
-		<!-- <Label id="idDraftOnlyfalseLabel" text="draftOnly=false" />
+		<Label id="idDraftOnlyfalseLabel" text="draftOnly=false" />
 		<upload:SingleFileUpload
 			id="idNonDraftSingleFileUpload"
 			fileNameProperty="fileName"
 			contentProperty="file"
 			draftOnly="false"
-			width="250px" /> -->
+			width="250px" />
 	</VBox>
 </core:FragmentDefinition>

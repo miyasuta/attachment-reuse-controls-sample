@@ -5,10 +5,10 @@
 			id="idDraftOnlyMultiFileUpload"
 			attachmentsSegment="attachments"
 			draftOnly="true" />
-		<!-- <Label id="idDraftOnlyfalseMultiFileUploadLabel" text="draftOnly=false" />
+		<Label id="idDraftOnlyfalseMultiFileUploadLabel" text="draftOnly=false" />
 		<upload:MultiFileUpload
 			id="idNonDraftMultiFileUpload"
 			attachmentsSegment="attachments"
-			draftOnly="false" /> -->
+			draftOnly="false" />
 	</VBox>
 </core:FragmentDefinition>

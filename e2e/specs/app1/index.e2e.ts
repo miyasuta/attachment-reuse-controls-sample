@@ -1,3 +1,3 @@
-import { runSingleFileUploadNonDraft } from "../shared/fioriElements.shared";
+import { runFioriElementsTests } from "../shared/fioriElements.shared";
 
-runSingleFileUploadNonDraft();
+runFioriElementsTests();

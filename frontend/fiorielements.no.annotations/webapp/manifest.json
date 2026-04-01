@@ -145,9 +145,13 @@
                   "sections": {
                     "SingleFileUpload": {
                       "template": "ns.fiorielements.no.annotations.ext.fragment.SingleFileUpload",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "GeneratedFacet1"
+                      },
                       "title": "File Upload"
                     },
-                    "MultiFileUpload": {
+                    "MultiFileUpload1": {
                       "template": "ns.fiorielements.no.annotations.ext.fragment.MultiFileUpload",
                       "position": {
                         "placement": "After",
