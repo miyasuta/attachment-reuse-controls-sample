@@ -3,12 +3,12 @@
     xmlns="sap.m">
     <Page id="page" title="Quotations">
         <List id="list"
-            items="{/Quotations}"
+            items="{mainModel>/Quotations}"
             mode="None">
             <items>
                 <StandardListItem
-                    title="{Description}"
-                    description="{ID}"
+                    title="{mainModel>Description}"
+                    description="{mainModel>ID}"
                     type="Navigation"
                     press=".onItemPress"/>
             </items>

@@ -63,7 +63,7 @@
           "bundleName": "freestylenondraft.i18n.i18n"
         }
       },
-      "": {
+      "mainModel": {
         "dataSource": "mainService",
         "preload": true,
         "settings": {

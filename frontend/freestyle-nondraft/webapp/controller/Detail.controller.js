@@ -14,6 +14,7 @@ sap.ui.define([
         _onPatternMatched(oEvent) {
             const sId = oEvent.getParameter("arguments").id;
             this.getView().bindElement({
+                model: "mainModel",
                 path: "/Quotations(ID=" + sId + ")",
                 parameters: {
                     $$updateGroupId: "$auto"

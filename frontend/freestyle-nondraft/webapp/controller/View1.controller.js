@@ -8,7 +8,7 @@ sap.ui.define([
         },
 
         onItemPress(oEvent) {
-            const oContext = oEvent.getSource().getBindingContext();
+            const oContext = oEvent.getSource().getBindingContext("mainModel");
             const sId = oContext.getProperty("ID");
             this.getOwnerComponent().getRouter().navTo("RouteDetail", { id: sId });
         }

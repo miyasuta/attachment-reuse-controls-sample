@@ -14,15 +14,16 @@
             <form:SimpleForm editable="false" layout="ResponsiveGridLayout">
                 <form:content>
                     <Label text="ID"/>
-                    <Text text="{ID}"/>
+                    <Text text="{mainModel>ID}"/>
                     <Label text="Description"/>
-                    <Text text="{Description}"/>
+                    <Text text="{mainModel>Description}"/>
                     <Label text="File"/>
                     <upload:SingleFileUpload
                         id="singleFileUpload"
                         fileNameProperty="fileName"
                         contentProperty="file"
                         draftOnly="false"
+                        modelName="mainModel"
                         enabled="{view>/uploadEnabled}"
                         width="300px"/>
                 </form:content>
@@ -32,6 +33,7 @@
                 id="multiFileUpload"
                 attachmentsSegment="attachments"
                 draftOnly="false"
+                modelName="mainModel"
                 enabled="{view>/uploadEnabled}"/>
         </content>
     </Page>
