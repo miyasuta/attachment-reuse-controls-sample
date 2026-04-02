@@ -15,6 +15,10 @@ async function navigateToObjectPage(): Promise<void> {
         async () => (await browser.getUrl()).includes("IsActiveEntity=true"),
         { timeout: 15000, timeoutMsg: "Object Page への遷移がタイムアウトしました" }
     );
+    // URL の変化だけでは Object Page の UI がまだ構築中の場合がある。
+    // waitForUI5() で全 UI5 非同期処理の完了を待ってから Edit ボタンを探す。
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (browser as any).waitForUI5();
 }
 
 async function clickEdit(): Promise<void> {
