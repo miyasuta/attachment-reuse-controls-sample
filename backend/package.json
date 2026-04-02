@@ -32,6 +32,7 @@
       "[test-lock]": {
         "auth": {
           "kind": "mocked",
+          "restrict_all_services": true,
           "users": {
             "alice": { "password": "alice" },
             "bob":   { "password": "bob" }
