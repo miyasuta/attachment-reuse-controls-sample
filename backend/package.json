@@ -29,10 +29,19 @@
         "auth": "dummy",
         "db": "hana"
       },
+      "[test-lock]": {
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "alice": { "password": "alice" },
+            "bob":   { "password": "bob" }
+          }
+        }
+      },
       "attachments": {
           "kind": "db",
           "scan": false
-      } 
+      }
     }
   }
 }
