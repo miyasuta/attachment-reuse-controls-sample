@@ -6,5 +6,11 @@ tmp/
 
 node_modules/
 
+# VSCode
+.vscode/
+
+# Generated
+gen/
+
 issues.md
 todo.md
