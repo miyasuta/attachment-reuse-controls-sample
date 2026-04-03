@@ -20,10 +20,9 @@
                     <Label text="File"/>
                     <upload:SingleFileUpload
                         id="singleFileUpload"
-                        fileNameProperty="fileName"
+                        fileName="{mainModel>fileName}"
                         contentProperty="file"
                         draftOnly="false"
-                        modelName="mainModel"
                         enabled="{view>/uploadEnabled}"
                         width="300px"/>
                 </form:content>
@@ -31,9 +30,8 @@
             <Title text="Attachments" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
             <upload:MultiFileUpload
                 id="multiFileUpload"
-                attachmentsSegment="attachments"
+                attachments="{mainModel>attachments}"
                 draftOnly="false"
-                modelName="mainModel"
                 enabled="{view>/uploadEnabled}"/>
         </content>
     </Page>
