@@ -1,6 +1,6 @@
 const MULTI = "multiFileUpload";
-// sapMListTblCol is a stable UI5 class for sap.m.Table column header cells
-const MULTI_COL_HEADER = `[id*="${MULTI}"] .sapMListTblHeader th.sapMListTblCol`;
+// sapMColumnHeaderContent is the class applied to sap.m.Text inside sap.m.Column headers
+const MULTI_COL_HEADER_TEXT = `[id*="${MULTI}"] th span.sapMColumnHeaderContent`;
 
 describe("App3 - MultiFileUpload column headers (de)", () => {
     before(async () => {
@@ -22,16 +22,19 @@ describe("App3 - MultiFileUpload column headers (de)", () => {
     });
 
     it("TC-3-2-13: displayProperties=\"mimeType\" でファイル名と Medientyp の2列のみ表示される", async () => {
-        // Wait for column headers to be populated by _bindTableItems
+        // Wait until the resolved label "Dateiname" appears.
+        // _bindTableItems() is called asynchronously after OData metadata loads
+        // (requestObject("/") in _scheduleBindTableItems), so we must wait for the
+        // correct label value rather than just any non-empty text.
         await browser.waitUntil(
             async () => {
-                const headers = await $$(`${MULTI_COL_HEADER} span.sapMText`);
+                const headers = await $$(MULTI_COL_HEADER_TEXT);
                 if (headers.length === 0) return false;
-                return (await headers[0].getText()).length > 0;
+                return (await headers[0].getText()) === "Dateiname";
             },
-            { timeout: 10000, timeoutMsg: "カラムヘッダーが設定されませんでした" }
+            { timeout: 30000, timeoutMsg: "カラムヘッダーが設定されませんでした" }
         );
-        const headers = await $$(`${MULTI_COL_HEADER} span.sapMText`);
+        const headers = await $$(MULTI_COL_HEADER_TEXT);
         expect(headers.length).toBe(2);
         expect(await headers[0].getText()).toBe("Dateiname");
         expect(await headers[1].getText()).toBe("Medientyp");
