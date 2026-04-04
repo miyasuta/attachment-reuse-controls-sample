@@ -31,6 +31,7 @@
             <upload:MultiFileUpload
                 id="multiFileUpload"
                 attachments="{mainModel>attachments}"
+                displayProperties="mimeType"
                 draftOnly="false"
                 enabled="{view>/uploadEnabled}"/>
         </content>

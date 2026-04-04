@@ -150,7 +150,7 @@ describe("App3 (freestyle-nondraft)", () => {
             expect(await uploadBtn.isEnabled()).toBe(true);
         });
 
-        it("TC-3-2-4+5: ファイルをアップロードするとテーブルにファイル名・日時・作成者が表示される", async () => {
+        it("TC-3-2-4+5: ファイルをアップロードするとテーブルにファイル名・MIMEタイプが表示される", async () => {
             await uploadMultiFile();
             await browser.waitUntil(
                 async () => $(`[id*="${MULTI}"] ${MULTI_ROW}`).isExisting(),
@@ -160,7 +160,6 @@ describe("App3 (freestyle-nondraft)", () => {
             expect(await link.getText()).toBe(FIXTURE_NAME);
             const cells = await $$(`[id*="${MULTI}"] ${MULTI_ROW} td.sapMListTblCell`);
             expect((await cells[1].getText()).length).toBeGreaterThan(0);
-            expect((await cells[2].getText()).length).toBeGreaterThan(0);
         });
 
         it("TC-3-2-2: ファイルアップロード済みの場合、テーブルにファイルが表示されること", async () => {

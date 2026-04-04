@@ -16,9 +16,12 @@ describe("App3 - MultiFileUpload column headers (de)", () => {
             timeout: 15000,
             timeoutMsg: "MultiFileUpload が表示されませんでした"
         });
+        // Wait for OData binding to complete so _bindTableItems() is called
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (browser as any).waitForUI5();
     });
 
-    it("TC-3-2-13: カラムヘッダーがODataメタモデルのドイツ語ラベルで表示される", async () => {
+    it("TC-3-2-13: displayProperties=\"mimeType\" でファイル名と Medientyp の2列のみ表示される", async () => {
         // Wait for column headers to be populated by _bindTableItems
         await browser.waitUntil(
             async () => {
@@ -29,8 +32,8 @@ describe("App3 - MultiFileUpload column headers (de)", () => {
             { timeout: 10000, timeoutMsg: "カラムヘッダーが設定されませんでした" }
         );
         const headers = await $$(`${MULTI_COL_HEADER} span.sapMText`);
+        expect(headers.length).toBe(2);
         expect(await headers[0].getText()).toBe("Dateiname");
-        expect(await headers[1].getText()).toBe("Angelegt am");
-        expect(await headers[2].getText()).toBe("Angelegt von");
+        expect(await headers[1].getText()).toBe("Medientyp");
     });
 });
