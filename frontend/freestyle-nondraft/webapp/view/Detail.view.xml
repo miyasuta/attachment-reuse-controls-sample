@@ -34,6 +34,27 @@
                 displayProperties="mimeType"
                 draftOnly="false"
                 enabled="{view>/uploadEnabled}"/>
+            <Title text="File Type Filtering (PDF only)" class="sapUiMediumMarginTop sapUiSmallMarginBottom"/>
+            <form:SimpleForm editable="false" layout="ResponsiveGridLayout">
+                <form:content>
+                    <Label text="Single File (PDF only)"/>
+                    <upload:SingleFileUpload
+                        id="singleFileUploadRestricted"
+                        fileName="{mainModel>fileName}"
+                        contentProperty="file"
+                        draftOnly="false"
+                        enabled="{view>/uploadEnabled}"
+                        fileTypes="pdf"
+                        width="300px"/>
+                </form:content>
+            </form:SimpleForm>
+            <upload:MultiFileUpload
+                id="multiFileUploadRestricted"
+                attachments="{mainModel>attachments}"
+                displayProperties="mimeType"
+                draftOnly="false"
+                enabled="{view>/uploadEnabled}"
+                fileTypes="pdf"/>
         </content>
     </Page>
 </mvc:View>

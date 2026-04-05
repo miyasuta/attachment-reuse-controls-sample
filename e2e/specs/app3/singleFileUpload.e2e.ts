@@ -5,8 +5,11 @@ const FIXTURE_NAME = "upload.txt";
 
 const SINGLE = "singleFileUpload";
 const MULTI = "multiFileUpload";
+const SINGLE_RESTRICTED = "singleFileUploadRestricted";
+const MULTI_RESTRICTED = "multiFileUploadRestricted";
 const MULTI_ROW = ".sapMListTbl tbody tr.sapMLIB";
 const MULTI_EMPTY = 'use[href="#sapIllus-Spot-DragFilesToUpload"]';
+const MESSAGE_BOX = ".sapMMessageBox";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function jsClick(el: any): Promise<void> {
@@ -265,6 +268,53 @@ describe("App3 (freestyle-nondraft)", () => {
                 await cleanupSingleFile();
                 await cleanupMultiFile();
             });
+        });
+    });
+
+    // =====================================================================
+    // 3-3. File Type Filtering
+    // =====================================================================
+    describe("3-3. File Type Filtering（fileTypes=pdf）", () => {
+
+        async function dismissMessageBox(): Promise<void> {
+            const msgBox = await $(MESSAGE_BOX);
+            await msgBox.waitForDisplayed({ timeout: 5000, timeoutMsg: "MessageBox が表示されませんでした" });
+            // Click the first button (OK / Close) to dismiss
+            const okBtn = await msgBox.$("button");
+            await okBtn.click();
+            await msgBox.waitForDisplayed({ timeout: 3000, reverse: true });
+        }
+
+        it("TC-3-3-1: SingleFileUpload に許可されていないファイルタイプをアップロードするとエラーダイアログが表示される", async () => {
+            const fileInput = await $(`[id*="${SINGLE_RESTRICTED}"] input[type="file"]`);
+            await fileInput.waitForExist({ timeout: 5000 });
+            const remote = await browser.uploadFile(FIXTURE_FILE);
+            await fileInput.setValue(remote);
+            await browser.execute((el: HTMLInputElement) => {
+                el.dispatchEvent(new Event("change", { bubbles: true }));
+            }, fileInput as unknown as HTMLInputElement);
+
+            await dismissMessageBox();
+
+            // ファイルはアップロードされていない（リンクが表示されない）
+            const link = $(`[id*="${SINGLE_RESTRICTED}"] a.sapMLnk`);
+            expect(await link.isDisplayed()).toBe(false);
+        });
+
+        it("TC-3-3-2: MultiFileUpload に許可されていないファイルタイプをアップロードするとエラーダイアログが表示される", async () => {
+            const fileInput = await $(`input[type="file"][id*="${MULTI_RESTRICTED}--uploadPlugin-uploader-fu"]`);
+            await fileInput.waitForExist({ timeout: 5000 });
+            const remote = await browser.uploadFile(FIXTURE_FILE);
+            await fileInput.setValue(remote);
+            await browser.execute((el: HTMLInputElement) => {
+                el.dispatchEvent(new Event("change", { bubbles: true }));
+            }, fileInput as unknown as HTMLInputElement);
+
+            await dismissMessageBox();
+
+            // ファイルはアップロードされていない（テーブルは空のまま）
+            const isEmpty = await $(`[id*="${MULTI_RESTRICTED}"] ${MULTI_EMPTY}`).isDisplayed();
+            expect(isEmpty).toBe(true);
         });
     });
 });
