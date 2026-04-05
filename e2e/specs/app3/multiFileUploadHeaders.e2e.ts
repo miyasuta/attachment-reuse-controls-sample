@@ -1,6 +1,6 @@
 const MULTI = "multiFileUpload";
 // sapMColumnHeaderContent is the class applied to sap.m.Text inside sap.m.Column headers
-const MULTI_COL_HEADER_TEXT = `[id*="${MULTI}"] th span.sapMColumnHeaderContent`;
+const MULTI_COL_HEADER_TEXT = `[id="${MULTI}"] th span.sapMColumnHeaderContent`;
 
 describe("App3 - MultiFileUpload column headers (de)", () => {
     before(async () => {

@@ -310,6 +310,10 @@ describe("App3 (freestyle-nondraft)", () => {
                 el.dispatchEvent(new Event("change", { bubbles: true }));
             }, fileInput as unknown as HTMLInputElement);
 
+            // UploadSetwithTable のファイルタイプ検証は非同期で実行されるため待機する
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            await (browser as any).waitForUI5();
+
             await dismissMessageBox();
 
             // ファイルはアップロードされていない（テーブルは空のまま）
